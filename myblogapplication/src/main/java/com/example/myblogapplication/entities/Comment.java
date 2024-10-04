@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Table(name = "comment")
+@Table(name = "comments")
 @Entity
 @Setter
 @Getter
@@ -16,10 +16,9 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer commentId;
     @NotEmpty
-    private String userName;
-    @NotEmpty
     private String message;
     @ManyToOne
+    @JoinColumn(name = "post_id")
     private Post post;
 
 }

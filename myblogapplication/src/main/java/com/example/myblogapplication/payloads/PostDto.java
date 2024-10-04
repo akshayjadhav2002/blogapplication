@@ -25,6 +25,7 @@ public class PostDto {
     @NotEmpty
     private String image;
     private Date date;
+
     private CategoryDto category;
     private UserDto user;
     private Set<CommentDto> comments = new HashSet<>();
