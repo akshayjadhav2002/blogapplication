@@ -80,6 +80,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable()) // Disable CSRF protection
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(PUBLIC_URLS).permitAll() // Public URLs
+                        .requestMatchers("/api/v1/auth/login").permitAll()
                         .requestMatchers(HttpMethod.GET).permitAll() // Allow all GET requests
                         .anyRequest().authenticated() // All other requests must be authenticated
                 )

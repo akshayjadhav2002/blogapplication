@@ -5,11 +5,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 
 @Component
@@ -18,7 +16,9 @@ public class JwtTokenHelper {
     //validity time of jwt token
     public  static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-    private  String secret = "jwtTokenKey";
+    private  String secret = ""+ Keys.secretKeyFor(SignatureAlgorithm.HS256);;
+
+
 
     //retrieve username from token
     public  String getUsernameFromToken(String token){
@@ -26,7 +26,7 @@ public class JwtTokenHelper {
     }
 
     //retrieve expiration date from jwt token
-    public Date getExpirationDateFromToekn(String token){
+    public Date getExpirationDateFromToken(String token){
         return getClaimFromToken(token,Claims::getExpiration);
     }
 
@@ -46,10 +46,14 @@ public class JwtTokenHelper {
     }
     //check is token is expired
     private Boolean isTokenExpired(String token){
-        final Date expiration = getExpirationDateFromToekn(token);
+        final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
-
+    //generate token for user
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return doGenerateToken(claims, userDetails.getUsername());
+    }
     //while creating the token -
     //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
     //2. Sign the JWT using the HS512 algorithm and secret key.
