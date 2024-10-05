@@ -1,12 +1,16 @@
 package com.example.myblogapplication.services.servicesImpl;
+import com.example.myblogapplication.config.AppConstants;
+import com.example.myblogapplication.entities.Role;
 import com.example.myblogapplication.entities.User;
 import com.example.myblogapplication.exceptions.ResourceNotFoundException;
 import com.example.myblogapplication.payloads.UserDto;
+import com.example.myblogapplication.repositories.RoleRepository;
 import com.example.myblogapplication.repositories.UserRepository;
 import com.example.myblogapplication.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,9 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImplementation implements UserService {
 
+
     private UserRepository userRepository;
     @Autowired
     private ModelMapper modalMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private RoleRepository roleRepo;
 
     @Autowired
     UserServiceImplementation (UserRepository userRepository){
@@ -60,6 +70,23 @@ public class UserServiceImplementation implements UserService {
     public void deleteUser(Integer userId) {
       User user =  this.userRepository.findById(userId).orElseThrow(()-> new ResourceNotFoundException("User","Id",userId));
      this.userRepository.delete(user);
+    }
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.modalMapper.map(userDto, User.class);
+
+        // encoded the password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        // roles
+        Role role = this.roleRepo.findById(AppConstants.NORMAL_USER).get();
+
+        user.getRole().add(role);
+
+        User newUser = this.userRepository.save(user);
+
+        return this.modalMapper.map(newUser, UserDto.class);
     }
 
     private  User dtoToUser(UserDto userdto){
