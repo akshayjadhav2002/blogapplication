@@ -4,19 +4,15 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Entity
 @Table(name="user")
 @NoArgsConstructor
 @Getter
 @Setter
-public class User  implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -37,14 +33,6 @@ public class User  implements UserDetails {
     )
     private Set<Role> role = new HashSet<>();
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority>  grantedAuthorities = this.role.stream().map((role) -> new SimpleGrantedAuthority(role.getName())).collect(Collectors.toList());
-        return grantedAuthorities;
-    }
 
-    @Override
-    public String getUsername() {
-        return this.name;
-    }
+
 }
