@@ -1,84 +1,47 @@
 package com.example.emailsender.service.implemantations;
+
+import com.example.emailsender.dto.EmailRequest;
+import com.example.emailsender.dto.EmailResponse;
+import jakarta.mail.internet.MimeMessage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
-
-
 @Service
-public class EmailServiceImplementation {
+@Slf4j
+public class EmailServiceImpl implements EmailService {
 
-
-    JavaMailSender javaMailSender;
     @Autowired
-    EmailServiceImplementation(JavaMailSender javaMailSender){
-        this.javaMailSender = javaMailSender;
-    }
+    private JavaMailSender javaMailSender;
     @Value("${spring.mail.username}")
     private String fromEmail;
+    @Override
+    public Object sendMail(EmailRequest emailRequest) {
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
 
-    public void sendEmail(String to, String subject, String body) {
-        SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
-        simpleMailMessage.setTo(to);
-        simpleMailMessage.setSubject(subject);
-        simpleMailMessage.setText(body);
-        simpleMailMessage.setFrom(fromEmail);
-        System.err.println("inside the implementation check error");
-        javaMailSender.send(simpleMailMessage);
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom("unkknown@gmail.com");
+            mimeMessageHelper.setTo(emailRequest.getTo());
+            mimeMessageHelper.setSubject(emailRequest.getSubject());
+            mimeMessageHelper.setText(emailRequest.getBody());
+
+            javaMailSender.send(mimeMessage);
+
+            log.info("Message Sent Successfully to: {}", emailRequest.getTo());
+            return new EmailResponse(emailRequest.getTo(),"Email Sent Successfully",true);
+        }
+        catch (Exception e) {
+            log.error("sendEmail() | Error : {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+
     }
 
-//    @Override
-//    public void sendEmail(String[] to, String subject, String body) {
-//        SimpleMailMessage mail = new SimpleMailMessage();
-//        mail.setTo(to);
-//        mail.setSubject(subject);
-//        mail.setText(body);
-//        mail.setFrom("akshaybloger@gmail.com");
-//        javaMailSender.send(mail);
-//    }
-////
-//    @Override
-//    public void sendEmailWithFile(String to, String subject, String body, InputStream file) {
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        try {
-//            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-//            mimeMessageHelper.setTo(to);
-//            mimeMessageHelper.setSubject(subject);
-//            mimeMessageHelper.setText(body, true);
-//            mimeMessageHelper.setFrom(fromEmail);
-//
-//            // Attach file from InputStream using ByteArrayResource
-//            ByteArrayResource resource = new ByteArrayResource(file.readAllBytes());
-//            mimeMessageHelper.addAttachment("filename.png", resource);
-//
-//            javaMailSender.send(mimeMessage);
-//        } catch (MessagingException | IOException e) {
-//            System.err.println("Failed to send email: " + e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
-//    @Override
-//    public void sendEmailWithFile(String[] to, String subject, String body, InputStream file) {
-//        MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-//        try {
-//            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-//            mimeMessageHelper.setTo(to);
-//            mimeMessageHelper.setSubject(subject);
-//            mimeMessageHelper.setText(body, true);
-//            mimeMessageHelper.setFrom(fromEmail);
-//
-//            // Attach file from InputStream using ByteArrayResource
-//            ByteArrayResource resource = new ByteArrayResource(file.readAllBytes());
-//            mimeMessageHelper.addAttachment("filename.png", resource);
-//
-//            javaMailSender.send(mimeMessage);
-//        } catch (MessagingException | IOException e) {
-//            System.err.println("Failed to send email: " + e.getMessage());
-//            throw new RuntimeException(e);
-//        }
-//    }
 
 }
