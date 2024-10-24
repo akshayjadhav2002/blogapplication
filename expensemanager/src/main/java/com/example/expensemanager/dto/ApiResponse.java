@@ -1,4 +1,4 @@
-package com.example.expensemanager.entity;
+package com.example.expensemanager.dto;
 
 import lombok.*;
 

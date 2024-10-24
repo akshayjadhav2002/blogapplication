@@ -1,9 +1,11 @@
 package com.example.expensemanager.controller;
 
-import com.example.expensemanager.entity.ApiResponse;
+import com.example.expensemanager.dto.ApiResponse;
+import com.example.expensemanager.dto.TransactionDTO;
 import com.example.expensemanager.entity.Transaction;
 import com.example.expensemanager.services.TransactionService;
-import org.springframework.cache.annotation.Cacheable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -17,17 +19,22 @@ public class TransactionController{
 
     private TransactionService transactionService;
 
+    //logging slf4j object
+    static final Logger logger = LoggerFactory.getLogger(TransactionController.class);
+
     public TransactionController ( TransactionService transactionService){
         this.transactionService = transactionService;
     }
 
     @PostMapping("/createExpense/")
-    public ResponseEntity<Object> createTransaction(@RequestBody Transaction transaction){
-        Boolean isCreated =  this.transactionService.createTransaction(transaction);
+    public ResponseEntity<Object> createTransaction(@RequestBody TransactionDTO transactionDto){
+        Boolean isCreated =  this.transactionService.createTransaction(transactionDto);
         if(isCreated) {
+            logger.info("transaction created successfully");
             return new ResponseEntity(new ApiResponse("Transaction saved successfully", isCreated), HttpStatus.CREATED);
         }
         else{
+            logger.info("transaction failed to create");
             return new ResponseEntity<>(new ApiResponse("Failed to save transaction",isCreated),HttpStatus.BAD_REQUEST);
         }
     }
@@ -36,9 +43,11 @@ public class TransactionController{
     public ResponseEntity<Object> getTransactionById(@PathVariable Integer transactionId) {
          Object transaction = this.transactionService.getTransaction(transactionId);
          if (!ObjectUtils.isEmpty(transaction)){
-             return new ResponseEntity<>(transaction, HttpStatus.OK);
+             logger.info("transaction fetched successfully");
+             return new ResponseEntity<>((Transaction)transaction, HttpStatus.OK);
             }
         else{
+             logger.info("transaction failed to fetch");
            return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
         }
     }
@@ -47,17 +56,33 @@ public class TransactionController{
     public ResponseEntity<Object> getTransaction() {
         List<Transaction> transactionList = this.transactionService.getAllTransaction();
         if (!ObjectUtils.isEmpty(transactionList)){
+            logger.info("transaction list fetched  successfully");
             return new ResponseEntity<>(transactionList, HttpStatus.OK);
         }
         else{
+            logger.info("transaction list failed to fetched");
             return new ResponseEntity<>(new ApiResponse("Fail to get all list",false),HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("update/")
-    public ResponseEntity<Object> updateTransaction(@RequestBody Transaction transaction){
-        Object savedTran = transactionService.updateTransaction(transaction);
+    public ResponseEntity<Object> updateTransaction(@RequestBody TransactionDTO transactionDto){
+        Object savedTran = transactionService.updateTransaction(transactionDto);
+        logger.info("transaction updated successfully");
         return new ResponseEntity(savedTran,HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("delete/{transactionId}")
+    public ResponseEntity<ApiResponse> deleteTransaction(@PathVariable Integer transactionId){
+        Boolean isDeleted = transactionService.deleteTransaction(transactionId);
+        if(isDeleted){
+            logger.info("transaction deleted successfully");
+            return new ResponseEntity<>(new ApiResponse("Transaction deleted Successfully",isDeleted),HttpStatus.ACCEPTED);
+        }
+        else{
+            logger.info("transaction failed to delete ");
+            return new ResponseEntity<>(new ApiResponse("Transaction failed to deleted",isDeleted),HttpStatus.ACCEPTED);
+        }
     }
 
 }

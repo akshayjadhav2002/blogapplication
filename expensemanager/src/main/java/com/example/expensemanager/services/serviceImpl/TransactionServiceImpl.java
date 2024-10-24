@@ -1,9 +1,11 @@
 package com.example.expensemanager.services.serviceImpl;
 
-import com.example.expensemanager.entity.ApiResponse;
+import com.example.expensemanager.dto.ApiResponse;
+import com.example.expensemanager.dto.TransactionDTO;
 import com.example.expensemanager.entity.Transaction;
 import com.example.expensemanager.repository.TransactionRepository;
 import com.example.expensemanager.services.TransactionService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,17 +17,20 @@ import java.util.List;
 public class TransactionServiceImpl  implements TransactionService {
 
     final static Logger logger = LoggerFactory.getLogger(TransactionServiceImpl.class);
+    private final ModelMapper modelMapper;
 
     TransactionRepository transactionRepository;
-    TransactionServiceImpl (TransactionRepository transactionRepository){
+    TransactionServiceImpl (TransactionRepository transactionRepository, ModelMapper modelMapper){
         this.transactionRepository = transactionRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
-    public Boolean createTransaction(Transaction transaction) {
-        if(!ObjectUtils.isEmpty(transaction)){
+    public Boolean createTransaction(TransactionDTO transactionDTO) {
+        if(!ObjectUtils.isEmpty(transactionDTO)){
+            Transaction transaction = modelMapper.map(transactionDTO,Transaction.class);
            Transaction savedTransaction = transactionRepository.save(transaction);
-           logger.info("Transaction saved - {}",savedTransaction);
+           logger.info("Transaction saved in database - {}",savedTransaction);
            return true;
         }
         else{
@@ -35,21 +40,23 @@ public class TransactionServiceImpl  implements TransactionService {
     }
 
     @Override
-    public Object updateTransaction(Transaction transaction) {
-        if (!ObjectUtils.isEmpty(transaction)){
-            Transaction savedTransaction = transactionRepository.getReferenceById(transaction.getTransactionId());
-            savedTransaction.setName(transaction.getName());
-            savedTransaction.setCategory(transaction.getCategory());
-            savedTransaction.setDescription(transaction.getDescription());
-            savedTransaction.setAmount(transaction.getAmount());
-            savedTransaction.setIsDeleted(transaction.getIsDeleted());
+    public Object updateTransaction(TransactionDTO transactionDTO) {
+        if (!ObjectUtils.isEmpty(transactionDTO)){
+            Transaction savedTransaction = transactionRepository.getReferenceById(transactionDTO.getTransactionId());
+            savedTransaction.setName(transactionDTO.getName());
+            savedTransaction.setDescription(transactionDTO.getDescription());
+            savedTransaction.setAmount(transactionDTO.getAmount());
+            savedTransaction.setDateTime(transactionDTO.getDateTime());
+//            savedTransaction.setUser(transactionDTO.getUserId());
+//            savedTransaction.setCategory(transactionDTO.getCategoryId());
+            ///we will edit it after seeing data base updates and the category and user updates
             logger.info("Transaction update  successfully - {}",savedTransaction);
             return transactionRepository.save(savedTransaction);
 
         }
         else {
             logger.info("Transaction update failed");
-            return new ApiResponse( transaction.getName() + " not Found",false);
+            return new ApiResponse( transactionDTO.getName() + " not Found",false);
         }
     }
 
@@ -57,9 +64,14 @@ public class TransactionServiceImpl  implements TransactionService {
     public Boolean deleteTransaction(Integer transactionId) {
         Transaction transaction = transactionRepository.getReferenceById(transactionId);
         if(!ObjectUtils.isEmpty(transaction)){
-            transactionRepository.delete(transaction);
-            logger.info("Transaction deleted successfully - {}",transaction);
-            return  true;
+            try {
+                transactionRepository.delete(transaction);
+                logger.info("Transaction deleted successfully - {}", transaction);
+                return true;
+            }
+            catch (Exception e){
+                throw new RuntimeException("Transaction does not Exists in Database -"+ e.getMessage());
+            }
         }
         else{
             logger.info("Transaction failed to delete");

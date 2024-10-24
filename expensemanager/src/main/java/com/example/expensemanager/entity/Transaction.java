@@ -1,40 +1,42 @@
 package com.example.expensemanager.entity;
 
-
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "transaction")// Ensure the table name matches exactly
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})  // Ignore Hibernate proxies
 public class Transaction {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)  // Use IDENTITY for auto-increment
-    @Column(name = "transaction_id", nullable = false, updatable = false)  // Enforce constraints
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer transactionId;
 
-    @Column(nullable = false)
     private String name;
 
-    @Column(length = 500)
     private String description;
 
-    @Column(nullable = false, precision = 10, scale = 2)  // Handle currency properly
+    @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal amount;
 
     @Column(name = "date_time", nullable = false)
     private LocalDateTime dateTime;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    @JsonBackReference(value = "user-transaction")  // Unique reference name matches User
+    private User user;
 
-    @Column(name = "is_deleted", nullable = false)
-    private String isDeleted;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    @JsonBackReference(value = "category-transaction")  // Unique reference for Category
+    private Category category;
 }

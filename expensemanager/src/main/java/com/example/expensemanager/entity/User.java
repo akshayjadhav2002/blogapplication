@@ -1,16 +1,27 @@
 package com.example.expensemanager.entity;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jdk.jfr.Enabled;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.ToString;
 
+import java.util.List;
+
+@Data
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
-    @Id
-    private Integer userId;
-    private String user;
-    private String userName;
-    private String password;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userId;
+    private String userName;
+    private String email;
+    private String password;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference(value = "user-transaction")  // Unique reference name
+    @ToString.Exclude
+    private List<Transaction> transactions;
 }

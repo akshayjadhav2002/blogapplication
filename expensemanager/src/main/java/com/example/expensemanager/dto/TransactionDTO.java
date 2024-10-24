@@ -1,7 +1,6 @@
 package com.example.expensemanager.dto;
 
-import com.example.expensemanager.entity.Category;
-import jakarta.persistence.*;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +13,13 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionDto {
+public class TransactionDTO {
 
     private Integer transactionId;
     private String name;
     private String description;
     private BigDecimal amount;
     private LocalDateTime dateTime;
-    private Category category;
-    private String isDeleted;
+    private Integer categoryId;
+    private Integer userId;
 }
