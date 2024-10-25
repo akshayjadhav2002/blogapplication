@@ -5,7 +5,6 @@ import com.example.expensemanager.dto.UserDTO;
 import com.example.expensemanager.entity.User;
 import com.example.expensemanager.repository.UserRepository;
 import com.example.expensemanager.services.UserService;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

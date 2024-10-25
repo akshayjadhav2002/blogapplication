@@ -5,7 +5,6 @@ import com.example.expensemanager.dto.CategoryDTO;
 import com.example.expensemanager.entity.Category;
 import com.example.expensemanager.repository.CategoryRepository;
 import com.example.expensemanager.services.CategoryService;
-import jakarta.persistence.EntityNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CategoryServiceImplementation  implements CategoryService {

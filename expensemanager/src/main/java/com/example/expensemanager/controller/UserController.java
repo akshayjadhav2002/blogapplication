@@ -6,6 +6,8 @@ import com.example.expensemanager.entity.User;
 import com.example.expensemanager.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -26,6 +28,7 @@ public class UserController {
         this.userService = userService;
     }
 
+
     @PostMapping("/createUser/")
     public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO){
         Boolean isCreated =  this.userService.createUser(userDTO);
@@ -38,6 +41,7 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse("Failed to save user",isCreated),HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @GetMapping("/{userId}")
     public ResponseEntity<Object> getUserById(@PathVariable Integer userId) {
@@ -52,6 +56,7 @@ public class UserController {
         }
     }
 
+   
     @GetMapping("/")
     public ResponseEntity<Object> getUser() {
         List<User> userList = this.userService.getAllUser();

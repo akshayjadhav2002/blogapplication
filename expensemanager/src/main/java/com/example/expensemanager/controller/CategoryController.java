@@ -4,7 +4,6 @@ import com.example.expensemanager.dto.ApiResponse;
 import com.example.expensemanager.dto.CategoryDTO;
 import com.example.expensemanager.entity.Category;
 import com.example.expensemanager.services.CategoryService;
-import jakarta.persistence.criteria.CriteriaBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
