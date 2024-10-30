@@ -9,6 +9,6 @@ public interface TransactionService{
     Boolean createTransaction(TransactionDTO transactionDTO);
     Object updateTransaction(TransactionDTO transactionDTO);
     Boolean deleteTransaction(Integer transactionId);
-    List<Transaction>  getAllTransaction();
+    List<Transaction>  getAllTransaction(Integer userId);
     Object getTransaction(Integer transactionId);
 }

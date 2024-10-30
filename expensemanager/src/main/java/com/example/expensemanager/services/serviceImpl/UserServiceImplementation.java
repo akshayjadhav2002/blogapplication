@@ -8,6 +8,7 @@ import com.example.expensemanager.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -94,5 +95,9 @@ public class UserServiceImplementation implements UserService {
             logger.info("User fetched from Database successfully - {}",user);
             return user;
         }
+    }
+    public User findUserByUsername(String username) {
+        return userRepository.findFirstByUserName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username: " + username));
     }
 }

@@ -17,7 +17,8 @@ import java.util.List;
 @RequestMapping("api/v1/cateory")
 public class CategoryController {
 
-    CategoryService categoryService;
+    private CategoryService categoryService;
+
     final static Logger logger = LoggerFactory.getLogger(CategoryController.class);
 
     CategoryController(CategoryService categoryService){
@@ -36,9 +37,10 @@ public class CategoryController {
             return new ResponseEntity<>(new ApiResponse("Category failed to create",isCreated),HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/lists")
-    public ResponseEntity<Object> getCategory() {
-        List<Category> categoryList = this.categoryService.getAllCategorys();
+
+    @GetMapping("/lists/user/{userName}")
+    public ResponseEntity<Object> getCategory(@PathVariable String userName) {
+        List<Category> categoryList = this.categoryService.getAllCategory(userName);
         if (!ObjectUtils.isEmpty(categoryList)){
             logger.info("category list fetched  successfully");
             return new ResponseEntity<>(categoryList, HttpStatus.OK);
@@ -49,18 +51,20 @@ public class CategoryController {
         }
     }
 
+
     @GetMapping("{categoryId}")
     public ResponseEntity<Object> getCategoryById(@PathVariable Integer categoryId){
         if (categoryId<=0){
-            return new ResponseEntity<>(new ApiResponse("Please Enter Vaild CetegoryId",false),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ApiResponse("Please Enter Valid CategoryId",false),HttpStatus.BAD_REQUEST);
         }
         else {
             try {
-                Category category =(Category)categoryService.getCategoryById(categoryId);
+                Category category =(Category) categoryService.getCategoryById(categoryId);
                 return new ResponseEntity<>(category,HttpStatus.OK);
             }
             catch (Exception exception){
-                return new ResponseEntity<>("Exception Occurred Failed to get Category",HttpStatus.BAD_REQUEST);
+                logger.error(exception.getMessage());
+                return new ResponseEntity<>(new ApiResponse("Exception Occurred Failed to get Category",false),HttpStatus.BAD_REQUEST);
             }
         }
     }

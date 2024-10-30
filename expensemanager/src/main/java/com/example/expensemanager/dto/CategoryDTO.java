@@ -12,5 +12,6 @@ public class CategoryDTO {
     private Integer categoryId;
     private String category;
     private String categoryDesc;
+    private String userName;
     private String imageUrl;
 }

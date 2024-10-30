@@ -17,11 +17,9 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryId;
     private String category;
-
+    private  String userName;
     private String categoryDesc;
-
     private String imageUrl;
-
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "category-transaction")  // Unique reference name
     private List<Transaction> transactions;

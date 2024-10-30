@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class TransactionServiceImpl  implements TransactionService {
@@ -81,16 +82,16 @@ public class TransactionServiceImpl  implements TransactionService {
     }
 
     @Override
-    public List<Transaction> getAllTransaction() {
-        List<Transaction> transactionList = transactionRepository.findAll();
+    public List<Transaction> getAllTransaction(Integer userId) {
+        List<Transaction> transactionList = transactionRepository.findAll().stream().filter(transaction -> transaction.getUser().getUserId().equals(userId)).toList();
         logger.info("All transaction list fetched");
         return transactionList;
     }
 
     @Override
     public Object getTransaction(Integer transactionId) {
-        if(transactionId<0){
-            logger.info("Invalid transaction id received");
+        if(transactionId<0 ){
+            logger.error("Invalid  Id received");
             return new ApiResponse("Invalid transaction Id",false);
         }
         else{

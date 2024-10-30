@@ -9,6 +9,6 @@ public interface CategoryService {
     Boolean createCategory(CategoryDTO categoryDTO);
     Object updateCategory(CategoryDTO categoryDTO);
     Boolean deleteCategory(Integer categoryId);
-    List<Category> getAllCategorys();
+    List<Category> getAllCategory(String userName);
     Object getCategoryById(Integer categoryId);
 }

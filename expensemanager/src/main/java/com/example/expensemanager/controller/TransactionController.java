@@ -51,10 +51,10 @@ public class TransactionController{
            return new ResponseEntity<>(false,HttpStatus.BAD_REQUEST);
         }
     }
-    @GetMapping("/")
-
-    public ResponseEntity<Object> getTransaction() {
-        List<Transaction> transactionList = this.transactionService.getAllTransaction();
+    ///Get transaction by the userId depending which user is login in
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<Object> getTransaction(@PathVariable Integer userId) {
+        List<Transaction> transactionList = this.transactionService.getAllTransaction(userId);
         if (!ObjectUtils.isEmpty(transactionList)){
             logger.info("transaction list fetched  successfully");
             return new ResponseEntity<>(transactionList, HttpStatus.OK);

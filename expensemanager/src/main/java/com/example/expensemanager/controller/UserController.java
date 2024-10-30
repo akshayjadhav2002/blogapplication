@@ -6,8 +6,6 @@ import com.example.expensemanager.entity.User;
 import com.example.expensemanager.services.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -56,7 +54,7 @@ public class UserController {
         }
     }
 
-   
+
     @GetMapping("/")
     public ResponseEntity<Object> getUser() {
         List<User> userList = this.userService.getAllUser();

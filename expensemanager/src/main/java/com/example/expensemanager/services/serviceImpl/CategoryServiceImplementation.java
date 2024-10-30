@@ -74,8 +74,8 @@ public class CategoryServiceImplementation  implements CategoryService {
     }
 
     @Override
-    public List<Category> getAllCategorys() {
-        List<Category> categoriesList = categoryRepository.findAll();
+    public List<Category> getAllCategory(String userName) {
+        List<Category> categoriesList = categoryRepository.findAll().stream().filter(category -> category.getUserName().equals(userName)).toList();
         logger.info("All category list fetched from database");
         return categoriesList;
     }
@@ -88,7 +88,8 @@ public class CategoryServiceImplementation  implements CategoryService {
             return category;
         }
         catch (Exception exception){
-            throw new RuntimeException("Entity Not Found with ID :"+ categoryId);
+            logger.warn(exception.getMessage());
+            return new ApiResponse("Exception occurred Category Not Found",false);
         }
     }
 }
