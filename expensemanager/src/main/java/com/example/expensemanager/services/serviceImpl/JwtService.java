@@ -6,6 +6,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
@@ -15,10 +16,12 @@ import java.util.Date;
 public class JwtService {
 
     // Ensure the secret key is at least 32 characters (or Base64 encoded)
-    private static final String SECRET_KEY = "9e412c42bca1a755c8bda6d1f16036c4466a41562875d86d59e2fdb71cb2e1a7bd5de17b14637307c3fc2338f14bdac8710377d11f6343d81fd0d73a8ac495f08e64fc6be6a5e4a8096891ecc8a16f65d025f79af3316f1980e5ea23865d3f72a0433d5979584021cd95256f25d04e1ef0a1f8ffa226081659562e6d9c7eb7d0a4b771b99e8a17406708ebcb6c860b8c1e764b7a0a7450eeecdba34a291f8b374517d6d38db825391b7c8ef9baac6a16faf8ef1444d8e283ee0d9c3a32d0fd9008d2dce0136027d4a279bf184cb8a288472193fdecfe77abdc1d3dd25f0a9017924e82214c64398357960a80d8a48516ceabed489ac7798ab8a95db5d0158f6a";
+    @Value("app.jwt-secret")
+    private static String SECRET_KEY;
 
     // Token expiration time: 24 hours (in milliseconds)
-    private static final long EXPIRATION_TIME = 86400000L;
+    @Value("app.jwt-expiration-milliseconds")
+    private static long EXPIRATION_TIME;
 
     // Generate a signing key using the secret key
     private Key getSigningKey() {
