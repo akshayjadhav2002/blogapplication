@@ -42,7 +42,7 @@ public class CategoryController {
     public ResponseEntity<Object> getCategory(@PathVariable String userName) {
         List<Category> categoryList = this.categoryService.getAllCategory(userName);
         if (!ObjectUtils.isEmpty(categoryList)){
-            logger.info("category list fetched  successfully");
+            logger.info("category list fetched  successfully"); 
             return new ResponseEntity<>(categoryList, HttpStatus.OK);
         }
         else{
@@ -64,7 +64,7 @@ public class CategoryController {
             }
             catch (Exception exception){
                 logger.error(exception.getMessage());
-                return new ResponseEntity<>(new ApiResponse("Exception Occurred Failed to get Category",false),HttpStatus.BAD_REQUEST);
+                return new ResponseEntity<>(new ApiResponse("Category not found with id - " + categoryId,false),HttpStatus.NOT_FOUND);
             }
         }
     }

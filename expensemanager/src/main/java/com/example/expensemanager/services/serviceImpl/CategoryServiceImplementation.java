@@ -3,11 +3,13 @@ package com.example.expensemanager.services.serviceImpl;
 import com.example.expensemanager.dto.ApiResponse;
 import com.example.expensemanager.dto.CategoryDTO;
 import com.example.expensemanager.entity.Category;
+import com.example.expensemanager.exception.ResourceNotFoundException;
 import com.example.expensemanager.repository.CategoryRepository;
 import com.example.expensemanager.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -57,7 +59,9 @@ public class CategoryServiceImplementation  implements CategoryService {
     @Override
     public Boolean deleteCategory(Integer categoryId) {
         try {
-            Category category = categoryRepository.getReferenceById(categoryId);
+            Category category = categoryRepository.findById(categoryId).orElseThrow(
+                    ()-> new ResourceNotFoundException("Category not found with id - " + categoryId)
+            );
             if (!ObjectUtils.isEmpty(category)) {
                 categoryRepository.delete(category);
                 logger.info("Category deleted successfully from Database - {}", categoryId);
@@ -83,13 +87,15 @@ public class CategoryServiceImplementation  implements CategoryService {
     @Override
     public Object getCategoryById(Integer categoryId) {
         try {
-            Category category = categoryRepository.getReferenceById(categoryId);
+            Category category = categoryRepository.findById(categoryId).orElseThrow(() ->
+                    new ResourceNotFoundException("Category not found with id - " + categoryId)
+            );
             logger.info("Category fetched from Database successfully - {}", category);
             return category;
         }
         catch (Exception exception){
             logger.warn(exception.getMessage());
-            return new ApiResponse("Exception occurred Category Not Found",false);
+            return new ApiResponse("Exception Occurred Failed to get Category",false);
         }
     }
 }
