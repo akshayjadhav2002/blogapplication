@@ -16,12 +16,21 @@ import java.util.Date;
 public class JwtService {
 
     // Ensure the secret key is at least 32 characters (or Base64 encoded)
+<<<<<<< HEAD
     @Value("${app.jwt-secret}")
     private String SECRET_KEY;
 
     // Token expiration time: 24 hours (in milliseconds)
     @Value("${app.jwt-expiration-milliseconds}")
     private long EXPIRATION_TIME;
+=======
+    @Value("app.jwt-secret")
+    private static String SECRET_KEY;
+
+    // Token expiration time: 24 hours (in milliseconds)
+    @Value("app.jwt-expiration-milliseconds")
+    private static long EXPIRATION_TIME;
+>>>>>>> 3ff45a2df46021fdf00d8a6b3b2b9b4bb63eca96
 
     // Generate a signing key using the secret key
     private Key getSigningKey() {
