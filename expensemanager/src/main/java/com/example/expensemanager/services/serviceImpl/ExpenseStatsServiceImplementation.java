@@ -24,6 +24,7 @@ public class ExpenseStatsServiceImplementation implements ExpenseStatsService {
     public List<ExpenseStatistic> getExpenseStatsByUserId(Integer userId) {
             List<Object[]> results = expenseStatsRepository.getAllExpenseCategoryWise(userId);
             List<ExpenseStatistic> expenseStats = new ArrayList<>();
+            System.err.println(results.size());
             for (Object[] row : results) {
                 String category = (String) row[0];
                 BigDecimal amount = (BigDecimal) row[1];

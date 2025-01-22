@@ -19,7 +19,9 @@ public class TransactionDTO {
     private String name;
     private String description;
     private BigDecimal amount;
+    //not required
     private LocalDateTime dateTime;
     private Integer categoryId;
+    //not required
     private Integer userId;
 }

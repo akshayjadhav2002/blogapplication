@@ -3,7 +3,6 @@ package com.example.expensemanager.repository;
 import com.example.expensemanager.entity.Transaction;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -19,5 +18,5 @@ public interface ExpenseStatsRepository extends JpaRepository<Transaction, Integ
                     "GROUP BY c.category_id",
             nativeQuery = true
     )
-    List<Object[]> getAllExpenseCategoryWise(@Param("userId") Integer userId);
+    List<Object[]> getAllExpenseCategoryWise(Integer userId);
 }

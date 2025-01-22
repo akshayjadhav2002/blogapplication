@@ -11,10 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/cateory")
+@RequestMapping("api/v1/category")
 public class CategoryController {
 
     private CategoryService categoryService;
@@ -26,7 +27,8 @@ public class CategoryController {
     }
 
     @PostMapping("/")
-    public ResponseEntity<Object> createCategory(@RequestBody CategoryDTO categoryDTO){
+    public ResponseEntity<Object> createCategory(@RequestBody CategoryDTO categoryDTO, Principal principal){
+        categoryDTO.setUserName(principal.getName());
         Boolean isCreated =  this.categoryService.createCategory(categoryDTO);
         if(isCreated) {
             logger.info("category created successfully");
@@ -38,8 +40,9 @@ public class CategoryController {
         }
     }
 
-    @GetMapping("/lists/user/{userName}")
-    public ResponseEntity<Object> getCategory(@PathVariable String userName) {
+    @GetMapping("/lists/")
+    public ResponseEntity<Object> getCategory(Principal principal) {
+        String userName = principal.getName();
         List<Category> categoryList = this.categoryService.getAllCategory(userName);
         if (!ObjectUtils.isEmpty(categoryList)){
             logger.info("category list fetched  successfully"); 

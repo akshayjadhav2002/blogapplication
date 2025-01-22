@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Service
 public class TransactionServiceImpl  implements TransactionService {
@@ -28,13 +28,14 @@ public class TransactionServiceImpl  implements TransactionService {
 
     @Override
     public Boolean createTransaction(TransactionDTO transactionDTO) {
-        if(!ObjectUtils.isEmpty(transactionDTO)){
+        try{
             Transaction transaction = modelMapper.map(transactionDTO,Transaction.class);
            Transaction savedTransaction = transactionRepository.save(transaction);
            logger.info("Transaction saved in database - {}",savedTransaction);
            return true;
         }
-        else{
+        catch (Exception e){
+            e.printStackTrace();
             logger.info("fail to save the transaction");
             return false;
         }

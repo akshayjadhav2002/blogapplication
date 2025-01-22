@@ -3,12 +3,14 @@ package com.akshay.urlshortner.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+
 import java.time.LocalDateTime;
 import java.util.List;
 
 
 
 @Entity
+@Data
 public class UrlMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +26,7 @@ public class UrlMapping {
     private List<ClickEvent> clickEvents;
 
     public Long getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Long id) {
@@ -72,7 +74,7 @@ public class UrlMapping {
     }
 
     public List<ClickEvent> getClickEvents() {
-        return clickEvents;
+        return this.clickEvents;
     }
 
     public void setClickEvents(List<ClickEvent> clickEvents) {

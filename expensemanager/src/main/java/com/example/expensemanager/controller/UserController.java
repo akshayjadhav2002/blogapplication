@@ -27,18 +27,7 @@ public class UserController {
     }
 
 
-    @PostMapping("/createUser/")
-    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO){
-        Boolean isCreated =  this.userService.createUser(userDTO);
-        if(isCreated) {
-            logger.info("user created successfully");
-            return new ResponseEntity(new ApiResponse("User saved successfully", isCreated), HttpStatus.CREATED);
-        }
-        else{
-            logger.info("user failed to create");
-            return new ResponseEntity<>(new ApiResponse("Failed to save user",isCreated),HttpStatus.BAD_REQUEST);
-        }
-    }
+
 
 
     @GetMapping("/{userId}")

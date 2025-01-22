@@ -21,10 +21,17 @@ import java.util.stream.Collectors;
 @Service
 public class UrlMappingService {
 
-    @Autowired
     private UrlMappingRepository urlMappingRepository;
-    @Autowired
+
     private ClickEventRepository clickEventRepository;
+
+    public UrlMappingService(UrlMappingRepository urlMappingRepository, ClickEventRepository clickEventRepository) {
+        this.urlMappingRepository = urlMappingRepository;
+        this.clickEventRepository = clickEventRepository;
+    }
+
+
+
 
     public UrlMappingDTO createShortUrl(String originalUrl, User user) {
 
@@ -35,7 +42,6 @@ public class UrlMappingService {
         urlMapping.setOriginalUrl(originalUrl);
         urlMapping.setUser(user);
         urlMapping.setCreatedDate(LocalDateTime.now());
-
         UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
         return convertToDTO(savedUrlMapping);
     }
@@ -94,6 +100,16 @@ public class UrlMappingService {
 
     public UrlMapping getOriginalUrl(String shortUrl) {
         UrlMapping urlMapping = urlMappingRepository.findByShortUrl(shortUrl);
+        if (urlMapping != null) {
+            urlMapping.setClickCount(urlMapping.getClickCount() + 1);
+            urlMappingRepository.save(urlMapping);
+
+            // Record Click Event
+            ClickEvent clickEvent = new ClickEvent();
+            clickEvent.setClickDate(LocalDateTime.now());
+            clickEvent.setUrlMapping(urlMapping);
+            clickEventRepository.save(clickEvent);
+        }
         return urlMapping;
     }
 }

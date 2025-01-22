@@ -3,9 +3,12 @@ package com.example.expensemanager.controller;
 import com.example.expensemanager.dto.ApiResponse;
 import com.example.expensemanager.dto.LoginRequest;
 import com.example.expensemanager.dto.LoginResponse;
+import com.example.expensemanager.dto.UserDTO;
 import com.example.expensemanager.entity.User;
 import com.example.expensemanager.services.serviceImpl.JwtService;
 import com.example.expensemanager.services.serviceImpl.UserServiceImplementation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final JwtService jwtService;
+    static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private UserServiceImplementation userServiceImplementation;
     public AuthController(JwtService jwtService,UserServiceImplementation userService) {
@@ -32,10 +36,24 @@ public class AuthController {
             LoginResponse response = new LoginResponse();
             response.setToken(token);
             response.setUsername(username);
+            logger.info("User with user name : " + username + "longed in");
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
             return new ResponseEntity<>(new ApiResponse("User Not Found",false),HttpStatus.OK);
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO){
+        Boolean isCreated =  this.userServiceImplementation.createUser(userDTO);
+        if(isCreated) {
+            logger.info("user created successfully");
+            return new ResponseEntity(new ApiResponse("User saved successfully", isCreated), HttpStatus.CREATED);
+        }
+        else{
+            logger.info("user failed to create");
+            return new ResponseEntity<>(new ApiResponse("Failed to save user",isCreated),HttpStatus.BAD_REQUEST);
         }
     }
 }
