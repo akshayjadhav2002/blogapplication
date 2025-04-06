@@ -50,7 +50,7 @@ public class TransactionServiceImpl  implements TransactionService {
             savedTransaction.setAmount(transactionDTO.getAmount());
             savedTransaction.setDateTime(transactionDTO.getDateTime());
 //            savedTransaction.setUser(transactionDTO.getUserId());
-//            savedTransaction.setCategory(transactionDTO.getCategoryId());
+//           savedTransaction.setCategory(transactionDTO.getCategoryId());
             ///we will edit it after seeing data base updates and the category and user updates
             logger.info("Transaction update  successfully - {}",savedTransaction);
             return transactionRepository.save(savedTransaction);

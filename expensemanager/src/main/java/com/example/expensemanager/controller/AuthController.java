@@ -30,8 +30,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<Object> login(@RequestBody LoginRequest loginRequest) {
         String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
         User user = userServiceImplementation.findUserByUsername(username);
-        if(!ObjectUtils.isEmpty(user)) {
+        String savedPassword = user.getPassword();
+        if(!ObjectUtils.isEmpty(user) && password.equals(savedPassword)) {
             String token = jwtService.generateToken(username);
             LoginResponse response = new LoginResponse();
             response.setToken(token);
@@ -40,7 +42,7 @@ public class AuthController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         else {
-            return new ResponseEntity<>(new ApiResponse("User Not Found",false),HttpStatus.OK);
+            return new ResponseEntity<>(new ApiResponse("User Not Found",false),HttpStatus.NOT_FOUND);
         }
     }
 

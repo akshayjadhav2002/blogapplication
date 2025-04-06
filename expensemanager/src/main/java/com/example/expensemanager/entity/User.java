@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @Entity
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-@Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = "user_name"))
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "user_name"))
 public class User {
 
     @Id
