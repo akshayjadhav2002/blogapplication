@@ -24,7 +24,7 @@ public class ExpenseStatsServiceImplementation implements ExpenseStatsService {
     public List<ExpenseStatistic> getExpenseStatsByUserId(Integer userId) {
             List<Object[]> results = expenseStatsRepository.getAllExpenseCategoryWise(userId);
             List<ExpenseStatistic> expenseStats = new ArrayList<>();
-            System.err.println(results.size());
+//            System.err.println(results.size());
             for (Object[] row : results) {
                 String category = (String) row[0];
                 BigDecimal amount = (BigDecimal) row[1];
@@ -32,4 +32,17 @@ public class ExpenseStatsServiceImplementation implements ExpenseStatsService {
             }
             return expenseStats;
     }
+
+    public List<ExpenseStatistic> getExpenseStatsByUserIdForMonth(Integer userId) {
+        List<Object[]> results = expenseStatsRepository.getAllExpenseCategoryWiseForMonth(userId);
+        List<ExpenseStatistic> expenseStatsForMonth = new ArrayList<>();
+//            System.err.println(results.size());
+        for (Object[] row : results) {
+            String category = (String) row[0];
+            BigDecimal amount = (BigDecimal) row[1];
+            expenseStatsForMonth.add(new ExpenseStatistic(category, amount));
+        }
+        return expenseStatsForMonth;
+    }
+
 }

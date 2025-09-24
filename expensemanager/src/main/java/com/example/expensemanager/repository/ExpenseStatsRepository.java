@@ -19,4 +19,24 @@ public interface ExpenseStatsRepository extends JpaRepository<Transaction, Integ
             nativeQuery = true
     )
     List<Object[]> getAllExpenseCategoryWise(Integer userId);
+
+
+    @Query(
+            value = """
+                    SELECT\s
+                        c.category,\s
+                        SUM(t.amount) AS amount
+                    FROM transaction t
+                    LEFT JOIN category c\s
+                        ON t.category_id = c.category_id
+                    WHERE\s
+                        t.user_id = :userId
+                        AND t.date_time >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+                    GROUP BY\s
+                        c.category_id;
+                    
+                    """,
+            nativeQuery = true
+    )
+    List<Object[]> getAllExpenseCategoryWiseForMonth(Integer userId);
 }

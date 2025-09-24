@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -19,16 +20,19 @@ public class UserServiceImplementation implements UserService {
 
     private final ModelMapper modelMapper;
     private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
     final static Logger logger = LoggerFactory.getLogger(UserServiceImplementation.class);
-    private UserServiceImplementation (UserRepository userRepository, ModelMapper modelMapper){
+    private UserServiceImplementation (UserRepository userRepository, ModelMapper modelMapper,PasswordEncoder passwordEncoder){
         this.userRepository = userRepository;
         this.modelMapper = modelMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public Boolean createUser(UserDTO userDTO) {
         if(!ObjectUtils.isEmpty(userDTO)){
             User user = modelMapper.map(userDTO,User.class);
+            user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
             User savedUser= userRepository.save(user);
             logger.info("User saved in database - {}",savedUser);
             return true;
@@ -46,6 +50,7 @@ public class UserServiceImplementation implements UserService {
                 savedUser.setUserName(userDTO.getUserName());
                 savedUser.setEmail(userDTO.getEmail());
                 savedUser.setPassword(userDTO.getPassword());
+                savedUser.setSubscribeToMail(userDTO.isSubscribeToMail());
                 logger.info("User update in database successfully - {}", savedUser);
                 return userRepository.save(savedUser);
 
