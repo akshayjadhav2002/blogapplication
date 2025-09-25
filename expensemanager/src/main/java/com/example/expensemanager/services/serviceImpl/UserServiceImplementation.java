@@ -50,7 +50,7 @@ public class UserServiceImplementation implements UserService {
                 savedUser.setUserName(userDTO.getUserName());
                 savedUser.setEmail(userDTO.getEmail());
                 savedUser.setPassword(userDTO.getPassword());
-                savedUser.setSubscribeToMail(userDTO.isSubscribeToMail());
+                savedUser.setIsSubscribeToMail(userDTO.getIsSubscribeToMail());
                 logger.info("User update in database successfully - {}", savedUser);
                 return userRepository.save(savedUser);
 

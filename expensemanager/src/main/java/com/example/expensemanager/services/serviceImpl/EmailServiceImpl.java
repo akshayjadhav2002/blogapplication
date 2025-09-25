@@ -22,16 +22,16 @@ public class EmailServiceImpl implements EmailService {
     @Autowired
     private ExpenseStatsServiceImplementation expenseStatsServiceImplementation;
 
+
     @Value("${spring.mail.username}")
     private String fromEmail;
-
 
     @Override
     public void sendEmail(String toEmail, String subject, String htmlContent) {
         try {
             MimeMessage message = javaMailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
+            helper.setFrom(fromEmail);
             helper.setTo(toEmail);
             helper.setSubject(subject);
             helper.setText(htmlContent, true); // true = enable HTML

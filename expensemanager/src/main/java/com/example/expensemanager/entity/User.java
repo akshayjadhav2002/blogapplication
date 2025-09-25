@@ -21,7 +21,7 @@ public class User {
     private String userName;
     private String email;
     private String password;
-    private boolean isSubscribeToMail;
+    private Boolean isSubscribeToMail;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference(value = "user-transaction")  // Unique reference name
     @ToString.Exclude

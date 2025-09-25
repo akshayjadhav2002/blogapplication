@@ -6,6 +6,7 @@ import com.example.expensemanager.entity.User;
 import com.example.expensemanager.services.EmailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -24,13 +25,14 @@ public class MailSubscribeService {
     @Autowired
     UserServiceImplementation userServiceImplementation;
 
-    @Scheduled(fixedDelay = 10000)
+
+    @Scheduled(cron = "0 0 10 1 * ?")
     public void sendMailToSubscribeUser(){
 
         List<User> userList = userServiceImplementation.getAllUser();
         log.info("users fetched for sending mail");
         for (User user : userList){
-            if (user.isSubscribeToMail()) {
+            if (user.getIsSubscribeToMail().booleanValue()) {
                 List<ExpenseStatistic> results = expenseStatsServiceImplementation.getExpenseStatsByUserIdForMonth(user.getUserId());
                 String htmlContent = emailService.buildExpenseHtml(results);
 
